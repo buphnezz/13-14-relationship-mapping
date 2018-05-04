@@ -2,22 +2,15 @@
 
 import faker from 'faker';
 import superagent from 'superagent';
-import Category from '../model/category';
 import { startServer, stopServer } from '../lib/server';
+import { pCreateCategoryMock, pRemoveCategoryMock } from './lib/category-mock';
 
 const apiUrl = `http://localhost:${process.env.PORT}/api/categories`;
-
-const pCreateCategoryMock = () => {
-  return new Category({
-    videoconsole: faker.lorem.words(15),
-    videogame: faker.lorem.words(2),
-  }).save();
-};
 
 describe('api/categories', () => {
   beforeAll(startServer);
   afterAll(stopServer);
-  afterEach(() => Category.remove({}));
+  afterEach(pRemoveCategoryMock);
 
   describe('POST api/categories', () => {
     test('200', () => {
