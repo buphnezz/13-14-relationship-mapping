@@ -2,13 +2,13 @@
 
 import mongoose from 'mongoose';
 
-const categorySchema = mongoose.Schema({
-  videoconsole: {
+const videoconsoleSchema = mongoose.Schema({
+  videotitle: {
     type: String,
     required: true,
     unique: true,
   },
-  videogame: {
+  videocontent: {
     type: String,
   },
   timestamp: {
@@ -27,4 +27,4 @@ const categorySchema = mongoose.Schema({
   usePushEach: true,
 });
 
-export default mongoose.model('category', categorySchema);
+export default mongoose.model('videoconsole', videoconsoleSchema);

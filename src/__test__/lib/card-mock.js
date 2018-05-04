@@ -1,33 +1,33 @@
 'use strict';
 
 import faker from 'faker';
-import Card from '../../model/card-model';
-import * as categoryMock from './category-mock';
-// import { pCreateCategoryMock, pRemoveCategoryMock } from '../lib/category-mock';
+import Videogame from '../../model/videogame-model';
+import * as videoconsoleMock from './videoconsole-mock';
+// import { pCreateVideoconsoleMock, pRemoveVideoconsoleMock } from '../lib/videoconsole-mock';
 
-const pCreateCardMock = () => {
+const pCreateVideogameMock = () => {
   const resultMock = {};
 
-  return categoryMock.pCreateCategoryMock() // Zachary - creating a category
-    .then((createdCategory) => {
-    // Zachary - Step 2: Create a new card
-      resultMock.category = createdCategory;
+  return videoconsoleMock.pCreateVideoconsoleMock() // Zachary - creating a videoconsole
+    .then((createdVideoconsole) => {
+    // Zachary - Step 2: Create a new videogame
+      resultMock.videoconsole = createdVideoconsole;
 
-      return new Card({
-        videoconsole: faker.lorem.words(15),
-        videogame: faker.lorem.words(20),
-        category: createdCategory._id,
+      return new Videogame({
+        videotitle: faker.lorem.words(15),
+        videocontent: faker.lorem.words(20),
+        videoconsole: createdVideoconsole._id,
       }).save();
     })
-    .then((newCard) => {
-      resultMock.card = newCard;
+    .then((newVideogame) => {
+      resultMock.videogame = newVideogame;
       return resultMock;
     });
 };
 
-const pRemoveCardMock = () => Promise.all([
-  Card.remove({}),
-  categoryMock.pRemoveCategoryMock(),
+const pRemoveVideogameMock = () => Promise.all([
+  Videogame.remove({}),
+  videoconsoleMock.pRemoveVideoconsoleMock(),
 ]);
 
-export { pCreateCardMock, pRemoveCardMock };
+export { pCreateVideogameMock, pRemoveVideogameMock };

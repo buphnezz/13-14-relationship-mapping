@@ -3,40 +3,40 @@
 import faker from 'faker';
 import superagent from 'superagent';
 import { startServer, stopServer } from '../lib/server';
-import { pCreateCategoryMock, pRemoveCategoryMock } from './lib/category-mock';
+import { pCreateVideoconsoleMock, pRemoveVideoconsoleMock } from './lib/videoconsole-mock';
 
-const apiUrl = `http://localhost:${process.env.PORT}/api/categories`;
+const apiUrl = `http://localhost:${process.env.PORT}/api/videoconsoles`;
 
-describe('api/categories', () => {
+describe('api/videoconsoles', () => {
   beforeAll(startServer);
   afterAll(stopServer);
-  afterEach(pRemoveCategoryMock);
+  afterEach(pRemoveVideoconsoleMock);
 
-  describe('POST api/categories', () => {
+  describe('POST api/videoconsoles', () => {
     test('200', () => {
-      const mockCategory = {
-        videoconsole: faker.lorem.words(10),
-        videogame: faker.lorem.words(50),
+      const mockVideoconsole = {
+        videotitle: faker.lorem.words(10),
+        videocontent: faker.lorem.words(50),
       };
       return superagent.post(apiUrl)
-        .send(mockCategory)
+        .send(mockVideoconsole)
         .then((response) => {
           expect(response.status).toEqual(200);
           expect(response.body._id).toBeTruthy();
-          expect(response.body.videoconsole).toEqual(mockCategory.videoconsole);
-          expect(response.body.videogame).toEqual(mockCategory.videogame);
+          expect(response.body.videotitle).toEqual(mockVideoconsole.videotitle);
+          expect(response.body.videocontent).toEqual(mockVideoconsole.videocontent);
         });
     });
 
     test('409 due to duplicate videoconsole', () => {
-      return pCreateCategoryMock()
-        .then((category) => {
-          const mockCategory = {
-            videoconsole: category.videoconsole,
-            videogame: category.videogame,
+      return pCreateVideoconsoleMock()
+        .then((videoconsole) => {
+          const mockVideoconsole = {
+            videoconsole: videoconsole.videoconsole,
+            videocontent: videoconsole.videocontent,
           };
           return superagent.post(apiUrl)
-            .send(mockCategory);
+            .send(mockVideoconsole);
         })
         .then(Promise.reject)
         .catch((err) => {
@@ -63,44 +63,44 @@ describe('api/categories', () => {
     });
   });
 
-  describe('PUT api/categories', () => {
+  describe('PUT api/videoconsoles', () => {
     test('200 for succcesful PUT', () => {
-      let categoryToUpdate = null;
-      return pCreateCategoryMock()
-        .then((category) => {
-          categoryToUpdate = category;
-          return superagent.put(`${apiUrl}/${category._id}`)
-            .send({ videoconsole: 'I HAVE A NEW CATEGORY TITLE' });
+      let videoconsoleToUpdate = null;
+      return pCreateVideoconsoleMock()
+        .then((videoconsole) => {
+          videoconsoleToUpdate = videoconsole;
+          return superagent.put(`${apiUrl}/${videoconsole._id}`)
+            .send({ videoconsole: 'I HAVE A NEW VIDEOCONSOLE VIDEOTITLE' });
         })
         .then((response) => {
           expect(response.status).toEqual(200);
-          expect(response.body.videoconsole).toEqual('I HAVE A NEW CATEGORY TITLE');
-          expect(response.body.videogame).toEqual(categoryToUpdate.videogame);
-          expect(response.body._id).toEqual(categoryToUpdate._id.toString());
+          expect(response.body.videoconsole).toEqual('I HAVE A VIDEOCONSOLE VIDEOTITLE');
+          expect(response.body.videocontent).toEqual(videoconsoleToUpdate.videocontent);
+          expect(response.body._id).toEqual(videoconsoleToUpdate._id.toString());
         });
     });
   });
 
-  describe('GET /api/categories', () => {
+  describe('GET /api/videoconsoles', () => {
     test('200', () => {
-      let tempCategory = null;
-      return pCreateCategoryMock()
-        .then((category) => {
-          tempCategory = category;
-          return superagent.get(`${apiUrl}/${category._id}`)
+      let tempVideoconsole = null;
+      return pCreateVideoconsoleMock()
+        .then((videoconsole) => {
+          tempVideoconsole = videoconsole;
+          return superagent.get(`${apiUrl}/${videoconsole._id}`)
             .then((response) => {
               expect(response.status).toEqual(200);
-              expect(response.body._id).toEqual(tempCategory._id.toString());
+              expect(response.body._id).toEqual(tempVideoconsole._id.toString());
             });
         });
     });
   });
 
-  describe('DELETE /api/categories', () => {
+  describe('DELETE /api/videoconsoles', () => {
     test('204', () => {
-      return pCreateCategoryMock()
-        .then((category) => {
-          return superagent.delete(`${apiUrl}/${category._id}`);
+      return pCreateVideoconsoleMock()
+        .then((videoconsole) => {
+          return superagent.delete(`${apiUrl}/${videoconsole._id}`);
         })
         .then((response) => {
           expect(response.status).toEqual(204);

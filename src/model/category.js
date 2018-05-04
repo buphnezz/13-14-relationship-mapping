@@ -2,13 +2,13 @@
 
 import mongoose from 'mongoose';
 
-const categorySchema = mongoose.Schema({
-  videoconsole: {
+const videoconsoleSchema = mongoose.Schema({
+  videotitle: {
     type: String,
     required: true,
     unique: true,
   },
-  videogame: {
+  videocontent: {
     type: String,
     required: true,
   },
@@ -23,11 +23,11 @@ const categorySchema = mongoose.Schema({
     default: () => new Date(),
   },
   // this is your "many" model that you'll think about tomorrow
-  cards: [
+  videogames: [
     {
-      type: mongoose.Schema.Types.ObjectId, ref: 'card', // your "many" model name goes here
+      type: mongoose.Schema.Types.ObjectId, ref: 'videogame', // your "many" model name goes here
     },
   ],
 });
 
-export default mongoose.model('category', categorySchema);
+export default mongoose.model('videoconsole', videoconsoleSchema);
