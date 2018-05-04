@@ -10,15 +10,22 @@ const videoconsoleSchema = mongoose.Schema({
   },
   videocontent: {
     type: String,
+    required: true,
+  },
+  genre: {
+    type: String,
+  },
+  rating: {
+    type: String,
   },
   timestamp: {
     type: Date,
     default: () => new Date(),
   },
   // this is your "many model that you'll think about tomorrow
-  cards: [
+  videogames: [
     {
-      type: mongoose.Schema.Types.ObjectId, ref: 'card', // your "many" model name goes here
+      type: mongoose.Schema.Types.ObjectId, ref: 'videogame', // your "many" model name goes here
     },
     // after the schema, youhave to add an object to tell mongoose 
     // how to save  so we type  'usePushEach: true,'

@@ -3,14 +3,14 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import logger from './logger';
-import categoryRoutes from '../route/category-router';
+import videoconsoleRoutes from '../route/videoconsole-router';
 import errorMiddleWare from './error-middleware';
 
 const app = express();
 let server = null;
 
 // #1 in chain
-app.use(categoryRoutes);
+app.use(videoconsoleRoutes);
 
 // chain 2
 app.all('*', (request, response) => {

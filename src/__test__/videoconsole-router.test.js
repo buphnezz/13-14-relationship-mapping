@@ -11,7 +11,6 @@ describe('api/videoconsoles', () => {
   beforeAll(startServer);
   afterAll(stopServer);
   afterEach(pRemoveVideoconsoleMock);
-
   describe('POST api/videoconsoles', () => {
     test('200', () => {
       const mockVideoconsole = {
@@ -32,7 +31,7 @@ describe('api/videoconsoles', () => {
       return pCreateVideoconsoleMock()
         .then((videoconsole) => {
           const mockVideoconsole = {
-            videoconsole: videoconsole.videoconsole,
+            videotitle: videoconsole.videotitle,
             videocontent: videoconsole.videocontent,
           };
           return superagent.post(apiUrl)
