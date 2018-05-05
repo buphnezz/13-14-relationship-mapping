@@ -5,8 +5,8 @@ import Videoconsole from '../../model/videoconsole-model';
 
 const pCreateVideoconsoleMock = () => {
   return new Videoconsole({
-    videoconsole: faker.lorem.words(15),
-    videogame: faker.lorem.words(20),
+    videotitle: faker.lorem.words(15),
+    videocontent: faker.lorem.words(20),
   }).save();
 };
 

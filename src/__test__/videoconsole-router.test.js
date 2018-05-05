@@ -27,7 +27,7 @@ describe('api/videoconsoles', () => {
         });
     });
 
-    test('409 due to duplicate videoconsole', () => {
+    test.only('409 due to duplicate videoconsole', () => {
       return pCreateVideoconsoleMock()
         .then((videoconsole) => {
           const mockVideoconsole = {
@@ -69,11 +69,11 @@ describe('api/videoconsoles', () => {
         .then((videoconsole) => {
           videoconsoleToUpdate = videoconsole;
           return superagent.put(`${apiUrl}/${videoconsole._id}`)
-            .send({ videoconsole: 'I HAVE A NEW VIDEOCONSOLE VIDEOTITLE' });
+            .send({ videotitle: 'I HAVE A NEW VIDEOCONSOLE VIDEOTITLE' });
         })
         .then((response) => {
           expect(response.status).toEqual(200);
-          expect(response.body.videoconsole).toEqual('I HAVE A VIDEOCONSOLE VIDEOTITLE');
+          expect(response.body.videotitle).toEqual('I HAVE A NEW VIDEOCONSOLE VIDEOTITLE');
           expect(response.body.videocontent).toEqual(videoconsoleToUpdate.videocontent);
           expect(response.body._id).toEqual(videoconsoleToUpdate._id.toString());
         });

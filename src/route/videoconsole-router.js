@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import HttpErrors from 'http-errors';
 import Videoconsole from '../model/videoconsole-model';
 import logger from '../lib/logger';
+import { Error } from 'mongoose';
 
 
 const jsonParser = bodyParser.json();
@@ -20,7 +21,10 @@ videoconsoleRouter.post('/api/videoconsoles', jsonParser, (request, response, ne
       logger.log(logger.INFO, 'ROUTER POST: 200');
       return response.json(videoconsole);
     })
-    .catch(next);
+    .catch(() => {
+      const customerror = new Error('duplicate key');
+      next(customerror);
+    });
   return undefined;
 });
 
