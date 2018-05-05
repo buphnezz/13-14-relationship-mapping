@@ -27,7 +27,7 @@ describe('api/videoconsoles', () => {
         });
     });
 
-    test.only('409 due to duplicate videoconsole', () => {
+    test('409 due to duplicate videoconsole', () => {
       return pCreateVideoconsoleMock()
         .then((videoconsole) => {
           const mockVideoconsole = {
