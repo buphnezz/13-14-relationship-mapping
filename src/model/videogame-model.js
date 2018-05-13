@@ -5,23 +5,25 @@ import HttpError from 'http-errors';
 import Videoconsole from './videoconsole-model';
 
 const videogameSchema = mongoose.Schema({
-  videotitle: {
+  gametitle: {
     type: String,
     required: true,
     unique: true,
   },
-  videocontent: {
+  gamecontent: {
     type: String,
   },
   createdOn: {
     type: Date,
     default: () => new Date(),
   },
+  esrb: {
+    type: String,
+  },
   videoconsole: {
-    type: mongoose.Schema.Types.ObjectId, // represents an id of another 
-    // object in mongo...this is _id.
-    required: true, // we want to know who owns this thing, where
-    ref: 'videoconsole', // tells which schema you're trying to link to, must copy the exact string in this ref: field
+    type: mongoose.Schema.Types.ObjectId, // Zachary - this is _id
+    required: true,
+    ref: 'videoconsole',
   },
 });
 
@@ -36,7 +38,7 @@ function videogamePreHook(done) { // done is using an (error, data) signature
       if (!videoconsoleFound) {
         throw new HttpError(404, 'videoconsole not found');
       }
-      videoconsoleFound.videogames.push(this._id);
+      videoconsoleFound.videogame.push(this._id);
       return videoconsoleFound.save();
     })
     .then(() => done())
@@ -50,7 +52,7 @@ const videogamePostHook = (document, done) => {
       if (!videoconsoleFound) {
         throw new HttpError(500, 'videoconsole not found');
       }
-      videoconsoleFound.videogames = videoconsoleFound.videogames.filter((videogame) => {
+      videoconsoleFound.videogame = videoconsoleFound.videogame.filter((videogame) => {
         return videogame._id.toString() !== document._id.toString();
       });
     })

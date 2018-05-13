@@ -23,7 +23,7 @@ const videoconsoleSchema = mongoose.Schema({
     default: () => new Date(),
   },
   // this is your "many model that you'll think about tomorrow
-  videogames: [
+  videogame: [
     {
       type: mongoose.Schema.Types.ObjectId, ref: 'videogame', // your "many" model name goes here
     },

@@ -3,39 +3,47 @@
 import faker from 'faker';
 import superagent from 'superagent';
 import { startServer, stopServer } from '../lib/server';
-import { pCreateVideoconsoleMock, pRemoveVideoconsoleMock } from './lib/videoconsole-mock';
+import Videoconsole from '../model/videoconsole-model';
 
 const apiUrl = `http://localhost:${process.env.PORT}/api/videoconsoles`;
+
+const mockVideoconsole = () => {
+  return new Videoconsole({
+    videotitle: faker.lorem.words(10),
+    videocontent: faker.lorem.words(50),
+  }).save();
+};
 
 describe('api/videoconsoles', () => {
   beforeAll(startServer);
   afterAll(stopServer);
-  afterEach(pRemoveVideoconsoleMock);
+  afterEach(() => Videoconsole.remove({})); 
+
   describe('POST api/videoconsoles', () => {
-    test('200', () => {
-      const mockVideoconsole = {
+    test('POST - should respond with a 200 status', () => {
+      const videoconsoleToPost = {
         videotitle: faker.lorem.words(10),
         videocontent: faker.lorem.words(50),
       };
       return superagent.post(apiUrl)
-        .send(mockVideoconsole)
+        .send(videoconsoleToPost)
         .then((response) => {
           expect(response.status).toEqual(200);
           expect(response.body._id).toBeTruthy();
-          expect(response.body.videotitle).toEqual(mockVideoconsole.videotitle);
-          expect(response.body.videocontent).toEqual(mockVideoconsole.videocontent);
+          expect(response.body.videotitle).toEqual(videoconsoleToPost.videotitle);
+          expect(response.body.videocontent).toEqual(videoconsoleToPost.videocontent);
         });
     });
 
-    test('409 due to duplicate videoconsole', () => {
-      return pCreateVideoconsoleMock()
-        .then((videoconsole) => {
-          const mockVideoconsole = {
-            videotitle: videoconsole.videotitle,
-            videocontent: videoconsole.videocontent,
+    test('POST - should display 409 due to duplicate videoconsole', () => {
+      return mockVideoconsole()
+        .then((videoconsolemock) => {
+          const incompleteMockData = {
+            videotitle: videoconsolemock.videotitle,
+            videocontent: videoconsolemock.videocontent,
           };
           return superagent.post(apiUrl)
-            .send(mockVideoconsole);
+            .send(incompleteMockData);
         })
         .then(Promise.reject)
         .catch((err) => {
@@ -43,7 +51,7 @@ describe('api/videoconsoles', () => {
         });
     });
 
-    test('400 due to lack of videoconsole', () => {
+    test('POST - should respond with 400 due to lack of videoconsole', () => {
       return superagent.post(apiUrl)
         .send({})
         .then(Promise.reject)
@@ -52,7 +60,7 @@ describe('api/videoconsoles', () => {
         });
     });
 
-    test('400 due to bad json', () => {
+    test('POST - should respond with 400 due to bad json', () => {
       return superagent.post(apiUrl)
         .send('{')
         .then(Promise.reject)
@@ -65,7 +73,7 @@ describe('api/videoconsoles', () => {
   describe('PUT api/videoconsoles', () => {
     test('200 for succcesful PUT', () => {
       let videoconsoleToUpdate = null;
-      return pCreateVideoconsoleMock()
+      return mockVideoconsole()
         .then((videoconsole) => {
           videoconsoleToUpdate = videoconsole;
           return superagent.put(`${apiUrl}/${videoconsole._id}`)
@@ -83,7 +91,7 @@ describe('api/videoconsoles', () => {
   describe('GET /api/videoconsoles', () => {
     test('200', () => {
       let tempVideoconsole = null;
-      return pCreateVideoconsoleMock()
+      return mockVideoconsole()
         .then((videoconsole) => {
           tempVideoconsole = videoconsole;
           return superagent.get(`${apiUrl}/${videoconsole._id}`)
@@ -93,17 +101,31 @@ describe('api/videoconsoles', () => {
             });
         });
     });
-  });
-
-  describe('DELETE /api/videoconsoles', () => {
-    test('204', () => {
-      return pCreateVideoconsoleMock()
-        .then((videoconsole) => {
-          return superagent.delete(`${apiUrl}/${videoconsole._id}`);
-        })
-        .then((response) => {
-          expect(response.status).toEqual(204);
+    test('GET - should respond with 404 status if there is no videoconsole found', () => {
+      return superagent.get(`${apiUrl}/invalidId`)
+        .then(Promise.reject)
+        .catch((response) => {
+          expect(response.status).toEqual(404);
         });
     });
+  });
+});
+
+describe('DELETE /api/videoconsoles', () => {
+  test('should respond with 204 if there are no errors', () => {
+    return pCreateVideoconsoleMock()
+      .then((videoconsole) => {
+        return superagent.delete(`${apiURL}/${videoconsole._id}`);
+      })
+      .then((response) => {
+        expect(response.status).toEqual(204);
+      });
+  });
+  test('should respond with 404 if there is no videoconsole id found', () => {
+    return superagent.delete(`${apiUrl}/NotAnID`)
+      .then(Promise.reject)
+      .catch((response) => {
+        expect(response.status).toEqual(404);
+      });
   });
 });

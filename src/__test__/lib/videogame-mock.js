@@ -3,7 +3,6 @@
 import faker from 'faker';
 import Videogame from '../../model/videogame-model';
 import * as videoconsoleMock from './videoconsole-mock';
-// import { pCreateVideoconsoleMock, pRemoveVideoconsoleMock } from '../lib/videoconsole-mock';
 
 const pCreateVideogameMock = () => {
   const resultMock = {};

@@ -3,9 +3,8 @@
 import { Router } from 'express';
 import bodyParser from 'body-parser';
 import HttpErrors from 'http-errors';
-import Videoconsole from '../model/videoconsole-model';
 import logger from '../lib/logger';
-import { Error } from 'mongoose';
+import Videoconsole from '../model/videoconsole-model';
 
 
 const jsonParser = bodyParser.json();
@@ -21,11 +20,7 @@ videoconsoleRouter.post('/api/videoconsoles', jsonParser, (request, response, ne
       logger.log(logger.INFO, 'ROUTER POST: 200');
       return response.json(videoconsole);
     })
-    .catch(() => {
-      const customerror = new Error('duplicate key');
-      next(customerror);
-    });
-  return undefined;
+    .catch(next);
 });
 
 videoconsoleRouter.put('/api/videoconsoles/:id', jsonParser, (request, response, next) => {
@@ -37,7 +32,7 @@ videoconsoleRouter.put('/api/videoconsoles/:id', jsonParser, (request, response,
         return next(new HttpErrors(404, 'videoconsole not found'));
       }
 
-      logger.log(logger.INFO, 'GET - responding with 200 status code');
+      logger.log(logger.INFO, 'PUT - responding with 200 status code');
       return response.json(updatedVideoconsole);
     })
     .catch(next);
@@ -61,14 +56,19 @@ videoconsoleRouter.get('/api/videoconsoles/:id', (request, response, next) => {
 videoconsoleRouter.delete('/api/videoconsoles/:id', (request, response, next) => {
   return Videoconsole.findByIdAndRemove(request.params.id)
     .then((videoconsole) => {
+      console.log('HHLELELOODOISFKJDSKFJDSF', request);
       if (!videoconsole) {
-        logger.log(logger.ERROR, 'VIDEOCONSOLE ROUTER: responding with 404 !videoconsole');
+        logger.log(logger.INFO, 'DELETE - responding with a 400 status code');
+        return next(new HttpErrors(400, 'videoconsole not found'));
+      }
+      if (!videoconsole) {
+        logger.log(logger.INFO, 'DELETE - responding with a 404 status code');
         return next(new HttpErrors(404, 'videoconsole not found'));
       }
-
-      logger.log(logger.INFO, 'VIDEOCONSOLE ROUTER: responding with 204 status code');
-      return response.sendStatus(204);
-    });
+      logger.log(logger.INFO, 'DELETE - responding with a 204 status code');
+      return next(new HttpErrors(204, 'no content'));
+    })
+    .catch(next);
 });
 
 export default videoconsoleRouter;
